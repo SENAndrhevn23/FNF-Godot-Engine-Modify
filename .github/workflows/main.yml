@@ -1,4 +1,4 @@
-name: Build Godot Project (FNF)
+name: Godot Build
 
 on:
   push:
@@ -8,56 +8,53 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        platform: [Linux, Windows, HTML5]
+        platform: [Windows, Linux, HTML5]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          lfs: true
 
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y unzip wget
+          sudo apt install -y wget unzip
 
       - name: Download Godot 3.5.3
         run: |
-          GODOT_VERSION=3.5.3
-          wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
-          unzip Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
-          chmod +x Godot_v${GODOT_VERSION}-stable_linux_headless.64
-          sudo mv Godot_v${GODOT_VERSION}-stable_linux_headless.64 /usr/local/bin/godot
+          wget https://downloads.tuxfamily.org/godotengine/3.5.3/Godot_v3.5.3-stable_linux_headless.64.zip
+          unzip Godot_v3.5.3-stable_linux_headless.64.zip
+          chmod +x Godot_v3.5.3-stable_linux_headless.64
+          sudo mv Godot_v3.5.3-stable_linux_headless.64 /usr/local/bin/godot
 
-      - name: Install export templates
+      # 🔥 THIS IS THE IMPORTANT FIX 🔥
+      - name: Import assets (required)
         run: |
-          GODOT_VERSION=3.5.3
-          mkdir -p ~/.local/share/godot/templates/${GODOT_VERSION}.stable
-          wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
-          unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz
-          mv templates/* ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+          godot --headless --editor --quit
 
-      - name: Create build directory
-        run: mkdir -p build/${{ matrix.platform }}
-
-      - name: Export project
+      - name: Create build folders
         run: |
-          case "${{ matrix.platform }}" in
-            Linux)
-              godot --headless --export-release "Linux" build/Linux/FNF.x86_64
-              ;;
-            Windows)
-              godot --headless --export-release "Windows" build/Windows/FNF.exe
-              ;;
-            HTML5)
-              godot --headless --export-release "HTML5" build/HTML5/index.html
-              ;;
-          esac
+          mkdir -p build/windows
+          mkdir -p build/linux
+          mkdir -p build/html5
 
-      - name: Upload build artifact
+      - name: Export Windows
+        if: matrix.platform == 'Windows'
+        run: |
+          godot --headless --export-release "Windows Desktop" build/windows/game.exe
+
+      - name: Export Linux
+        if: matrix.platform == 'Linux'
+        run: |
+          godot --headless --export-release "Linux/X11" build/linux/game.x86_64
+
+      - name: Export HTML5
+        if: matrix.platform == 'HTML5'
+        run: |
+          godot --headless --export-release "HTML5" build/html5/index.html
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: FNF-${{ matrix.platform }}
-          path: build/${{ matrix.platform }}
+          name: build-${{ matrix.platform }}
+          path: build/
