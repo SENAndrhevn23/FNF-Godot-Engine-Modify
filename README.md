@@ -1,28 +1,112 @@
-# Don't use this engine
-Something better is coming...
+# ⚠️ Warning
 
-Just Wait I swear something better is coming seriously...
+**Do not use this engine unless you know what you’re doing.**
 
-# FNF-Godot-Engine
-Hello, Welcome to my repo of my Friday Night Funkin' Remake in the Godot Engine.
+This engine is currently in **beta**.  
+Development is focused on adding features and improving performance with minimal lag.
 
-Scroll Down for details on updates...
+This project is based on the **FNF Godot Engine template**.  
+I don’t fully claim this engine as original — it is a **modified version**.
 
-Ultimate Rhythm Game Excellence
+> **Credits:**  
+> Please credit **h-slice-js** for helping convert Haxe logic into real Godot code.
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/xDq9DiVd5Rw/0.jpg)](http://www.youtube.com/watch?v=xDq9DiVd5Rw "FNF Godot Edition Release Trailer")
+---
 
+# 🎵 FNF Godot Engine (Modified)
 
-# Building
-To build the game just open the project.godot file in your favourite Godot 3.4+ Editor and Hit Export then select your desired platform.
-# TF is a WFC
-Funkin' WFC is part of the WFC Online Network Service. Funkin' WFC provides Downloading of Mods via the internet inside the Game, Chatrooms, Mutiplayer Online Sessions, forums, and much much more.
+Welcome to the repository for a **Friday Night Funkin’ remake / modified engine** built using **Godot**.
 
-WFC Is in development and will probs be out by version 2.0.
-# Any DOCS for the Rhythm System Yet.
-Yep, It's in the Docs Folder.
-# ModChart Support?
-Kinda, we will have two versions of the engine.
-One will be without ModChart Support and can be opened in any Godot Editor.
-Another will have ModChart Support But will require you to build the Godot engine with a Lua
-Module (we will provide the source you just need to compile it)
+Scroll down for details on features, building, and future updates.
+
+**Ultimate Rhythm Game Excellence**
+
+[![FNF Godot Edition Trailer](http://img.youtube.com/vi/xDq9DiVd5Rw/0.jpg)](http://www.youtube.com/watch?v=xDq9DiVd5Rw "FNF Godot Edition Release Trailer")
+
+---
+
+## 🚀 Features
+
+- Heavy **performance optimizations**
+- **No note pooling**
+- **Botplay support**
+- Designed to handle large and complex charts
+
+---
+
+## 📄 JSON Support
+
+This engine supports **JSON files** and can bypass Haxe’s JSON size limitation.
+
+- Haxe JSON limit: ~**1.99 GB**
+- 32-bit integer limit: **2,147,483,647 bytes (~2.1 GB)**
+
+This allows extremely large charts and data files.
+
+---
+
+## ⌨️ Extra Keys Support (Planned)
+
+The chart editor and note system are planned to be reworked to support:
+- **1–26 keys**
+- Possibly **1–1000 keys** (experimental)
+
+Estimated timeframe: **Early 2026 or near 2027**.
+
+---
+
+## 🧩 Modchart Support
+
+**Partially supported.**
+
+Modcharts should mostly work, but:
+- Some features may be limited
+- Stability may vary
+
+---
+
+## 🎨 Shader Support
+
+Shaders similar to Haxe’s **fragment (frag) format**:
+- Possibly supported in the future
+- Depends on feasibility and demand
+
+---
+
+## 🛠️ Building
+
+To build the game:
+
+1. Open `project.godot` using **Godot 3.4+**
+2. Click **Export**
+3. Select your desired platform
+
+---
+
+## 🌐 What is WFC?
+
+**Funkin’ WFC** is part of the **WFC Online Network Service**.
+
+Planned features include:
+- Downloading mods directly inside the game
+- Chatrooms
+- Multiplayer online sessions
+- Forums
+- More online features
+
+> WFC is currently in development and is planned for **version 2.0**.
+
+---
+
+## 📚 Documentation
+
+Docs for the **rhythm system** are available in the `Docs` folder.
+
+---
+
+## ❤️ Final Notes
+
+Thanks for checking out and using this engine.  
+More features, fixes, and improvements are coming soon.
+
+Stay tuned.
