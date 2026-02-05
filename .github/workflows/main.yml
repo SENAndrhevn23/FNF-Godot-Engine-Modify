@@ -18,17 +18,18 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y wget unzip
+          sudo apt install -y unzip wget
 
-      - name: Download Godot 3.5.3
+      # ✅ FIXED: GitHub mirror (NO tuxfamily)
+      - name: Download Godot 3.5.3 Headless
         run: |
-          wget https://downloads.tuxfamily.org/godotengine/3.5.3/Godot_v3.5.3-stable_linux_headless.64.zip
+          wget https://github.com/godotengine/godot/releases/download/3.5.3-stable/Godot_v3.5.3-stable_linux_headless.64.zip
           unzip Godot_v3.5.3-stable_linux_headless.64.zip
           chmod +x Godot_v3.5.3-stable_linux_headless.64
           sudo mv Godot_v3.5.3-stable_linux_headless.64 /usr/local/bin/godot
 
-      # 🔥 THIS IS THE IMPORTANT FIX 🔥
-      - name: Import assets (required)
+      # 🔥 REQUIRED OR YOUR PROJECT WILL CRASH
+      - name: Import assets
         run: |
           godot --headless --editor --quit
 
