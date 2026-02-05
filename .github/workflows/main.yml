@@ -1,53 +1,49 @@
-name: Build Godot Project FNF
+name: Build Godot 4 Project FNF
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        platform: [linux, windows, web]
+        platform: [Linux, Windows, HTML5]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      # 1️⃣ Checkout repo
+      - uses: actions/checkout@v3
         with:
           lfs: true
 
+      # 2️⃣ Setup Godot
       - name: Setup Godot
-        uses: chickensoft-games/setup-godot@v2
+        uses: firebelley/setup-godot@v3
         with:
-          version: 4.2.1
-          cache: true
+          godot-version: "4.2.4" # Set your Godot 4 version
+          export-template: true
 
-      - name: Install Linux dependencies
+      # 3️⃣ Build project
+      - name: Export Godot Project
         run: |
-          sudo apt update
-          sudo apt install -y \
-            libfontconfig1 \
-            libx11-6 \
-            libxrandr2 \
-            libxi6 \
-            libxinerama1 \
-            libxcursor1 \
-            libgl1-mesa-dev
+          mkdir -p build/${{ matrix.platform }}
+          case "${{ matrix.platform }}" in
+            Linux)
+              godot --export "Linux/X11" "build/Linux/FNF-Godot-Edition.x86_64"
+              ;;
+            Windows)
+              godot --export "Windows" "build/Windows/FNF-Godot-Edition.exe"
+              ;;
+            HTML5)
+              godot --export "HTML5" "build/Web/FNF-Godot-Edition.zip"
+              ;;
+          esac
 
-      - name: Print Godot version
-        run: godot --version
-
-      - name: Export Project
-        run: |
-          echo "Exporting ${{ matrix.platform }}"
-          godot --headless --export-release "${{ matrix.platform }}"
-          echo "Exported files:"
-          ls -R build
-
+      # 4️⃣ Upload artifacts
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: FNF-${{ matrix.platform }}
+          name: Client-${{ matrix.platform }}
           path: build/${{ matrix.platform }}
