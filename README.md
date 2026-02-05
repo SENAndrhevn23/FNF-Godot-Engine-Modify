@@ -9,7 +9,7 @@ This project is based on the **FNF Godot Engine template**.
 I don’t fully claim this engine as original — it is a **modified version**.
 
 > **Credits:**  
-> Please credit **h-slice-js** for helping convert Haxe logic into real Godot code.
+> Please credit **h-slice-js** for the code convert Haxe logic into real Godot code.
 
 ---
 
