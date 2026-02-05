@@ -11,6 +11,11 @@ I don’t fully claim this engine as original — it is a **modified version**.
 > **Credits:**  
 > Please credit **h-slice-js** for the code convert Haxe logic into real Godot code.
 
+
+
+# Updates
+**i have to compile them and stop using workflow since it does not compile properly**
+
 ---
 
 # 🎵 FNF Godot Engine (Modified)
