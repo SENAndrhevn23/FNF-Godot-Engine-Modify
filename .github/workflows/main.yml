@@ -1,32 +1,48 @@
 name: Build Godot Project FNF
 
 on:
-  push: {}
-  pull_request: {}
+  push:
+  pull_request:
 
 jobs:
-  Godot:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [Linux, Windows, HTML5]
+        platform: [linux, windows, web]
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      - name: Build Godot Project
-        id: build
-        uses: josephbmanley/build-godot-action@v1.4.1
+      - name: Install Godot
+        uses: chickensoft-games/setup-godot@v2
         with:
-          name: FNF-Godot-Edition
-          preset: ${{ matrix.platform }}
-          debugMode: "false"
+          version: 4.2.1
+          use-dotnet: false
+          cache: true
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            libfontconfig1 \
+            libx11-6 \
+            libxrandr2 \
+            libxi6 \
+            libxinerama1 \
+            libxcursor1 \
+            libgl1-mesa-dev
+
+      - name: Export Project
+        run: |
+          mkdir -p build/${{ matrix.platform }}
+          godot --headless --export-release "${{ matrix.platform }}" build/${{ matrix.platform }}/FNF
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Client - ${{ matrix.platform }}
-          path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
+          name: FNF-${{ matrix.platform }}
+          path: build/${{ matrix.platform }}
