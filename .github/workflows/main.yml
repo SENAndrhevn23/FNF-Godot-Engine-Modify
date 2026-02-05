@@ -18,32 +18,36 @@ jobs:
         with:
           lfs: true
 
-      # 2️⃣ Setup Godot
-      - name: Setup Godot
-        uses: firebelley/setup-godot@v3
-        with:
-          godot-version: "4.2.4" # Set your Godot 4 version
-          export-template: true
+      # 2️⃣ Install Godot 4
+      - name: Download Godot 4
+        run: |
+          GODOT_VERSION=4.2.4
+          PLATFORM="linux"
+          wget https://downloads.tuxfamily.org/godotengine/$GODOT_VERSION/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip -O godot.zip
+          unzip godot.zip -d godot
+          chmod +x godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          echo "$PWD/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" > godot_path.txt
 
-      # 3️⃣ Build project
+      # 3️⃣ Build/export
       - name: Export Godot Project
         run: |
+          GODOT=$(cat godot_path.txt)
           mkdir -p build/${{ matrix.platform }}
           case "${{ matrix.platform }}" in
             Linux)
-              godot --export "Linux/X11" "build/Linux/FNF-Godot-Edition.x86_64"
+              $GODOT --export "Linux/X11" build/Linux/FNF-Godot-Edition.x86_64
               ;;
             Windows)
-              godot --export "Windows" "build/Windows/FNF-Godot-Edition.exe"
+              $GODOT --export "Windows" build/Windows/FNF-Godot-Edition.exe
               ;;
             HTML5)
-              godot --export "HTML5" "build/Web/FNF-Godot-Edition.zip"
+              $GODOT --export "HTML5" build/Web/FNF-Godot-Edition.zip
               ;;
           esac
 
       # 4️⃣ Upload artifacts
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Client-${{ matrix.platform }}
           path: build/${{ matrix.platform }}
