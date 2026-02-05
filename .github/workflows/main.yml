@@ -1,53 +1,56 @@
-name: Build Godot 4 Project FNF
+name: Build Godot 4 FNF
 
 on:
   push:
-    branches: [main]
   pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         platform: [Linux, Windows, HTML5]
 
     steps:
-      # 1️⃣ Checkout repo
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           lfs: true
 
-      # 2️⃣ Install Godot 4
-      - name: Download Godot 4
+      - name: Download Godot
         run: |
           GODOT_VERSION=4.2.4
-          PLATFORM="linux"
-          wget https://downloads.tuxfamily.org/godotengine/$GODOT_VERSION/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip -O godot.zip
-          unzip godot.zip -d godot
-          chmod +x godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
-          echo "$PWD/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" > godot_path.txt
+          wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          unzip Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          sudo mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 /usr/local/bin/godot
 
-      # 3️⃣ Build/export
-      - name: Export Godot Project
+      - name: Install Export Templates
         run: |
-          GODOT=$(cat godot_path.txt)
+          GODOT_VERSION=4.2.4
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+
+      - name: Export Project
+        run: |
           mkdir -p build/${{ matrix.platform }}
           case "${{ matrix.platform }}" in
             Linux)
-              $GODOT --export "Linux/X11" build/Linux/FNF-Godot-Edition.x86_64
+              godot --headless --export-release "Linux" build/Linux/FNF.x86_64
               ;;
             Windows)
-              $GODOT --export "Windows" build/Windows/FNF-Godot-Edition.exe
+              godot --headless --export-release "Windows" build/Windows/FNF.exe
               ;;
             HTML5)
-              $GODOT --export "HTML5" build/Web/FNF-Godot-Edition.zip
+              godot --headless --export-release "HTML5" build/HTML5/FNF.zip
               ;;
           esac
 
-      # 4️⃣ Upload artifacts
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Client-${{ matrix.platform }}
+          name: FNF-${{ matrix.platform }}
           path: build/${{ matrix.platform }}
