@@ -7,30 +7,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - linux
-          - windows
-          - web
+        platform: [linux, windows, web]
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      # Install Godot 4 (headless)
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
           version: 4.2.1
-          use-dotnet: false
           cache: true
 
-      # Linux deps required for Godot export
       - name: Install Linux dependencies
         run: |
           sudo apt update
@@ -43,26 +36,17 @@ jobs:
             libxcursor1 \
             libgl1-mesa-dev
 
-      # Debug info (VERY helpful)
       - name: Print Godot version
         run: godot --version
 
-      # Export project
-      - name: Export Godot project
+      - name: Export Project
         run: |
-          mkdir -p build/${{ matrix.platform }}
+          echo "Exporting ${{ matrix.platform }}"
+          godot --headless --export-release "${{ matrix.platform }}"
+          echo "Exported files:"
+          ls -R build
 
-          echo "Exporting for ${{ matrix.platform }}..."
-
-          godot --headless --export-release \
-            "${{ matrix.platform }}" \
-            build/${{ matrix.platform }}/FNF
-
-          echo "Export result:"
-          ls -R build/${{ matrix.platform }}
-
-      # Upload exported build
-      - name: Upload artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: FNF-${{ matrix.platform }}
